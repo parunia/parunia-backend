@@ -1,0 +1,96 @@
+html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parunia - Multi-IA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #1a1a1a; color: white; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 30px; color: #00ff88; }
+        .api-section { background: #2a2a2a; padding: 20px; margin: 20px 0; border-radius: 10px; }
+        textarea { width: 100%; height: 100px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; padding: 10px; }
+        input { width: 100%; background: #333; color: white; border: 1px solid #555; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        button { background: #00ff88; color: #1a1a1a; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #00cc66; }
+        .response { background: #333; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #00ff88; }
+        .error { border-left-color: #ff4444; background: #442222; }
+        .loading { opacity: 0.6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 PARUNIA - Comparateur Multi-IA</h1>
+        
+        <div class="api-section">
+            <h2>📝 Votre Question</h2>
+            <textarea id="prompt" placeholder="Posez votre question ici..."></textarea>
+        </div>
+
+        <div class="api-section">
+            <h2>🔑 Clés API</h2>
+            <input type="password" id="claudeKey" placeholder="Clé API Claude (Anthropic)">
+            <input type="password" id="chatgptKey" placeholder="Clé API ChatGPT (OpenAI)">
+            <input type="password" id="perplexityKey" placeholder="Clé API Perplexity">
+            <button onclick="testAll()">🚀 Comparer les 3 IA</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        async function callAPI(endpoint, prompt, apiKey) {
+            const response = await fetch(`/api/${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt, apiKey })
+            });
+            return response.json();
+        }
+
+        async function testAll() {
+            const prompt = document.getElementById('prompt').value;
+            const claudeKey = document.getElementById('claudeKey').value;
+            const chatgptKey = document.getElementById('chatgptKey').value;
+            const perplexityKey = document.getElementById('perplexityKey').value;
+
+            if (!prompt) return alert('Veuillez saisir une question');
+
+            document.getElementById('results').innerHTML = '<div class="loading">⏳ Interrogation des IA en cours...</div>';
+
+            const apis = [
+                { name: '🧠 Claude', endpoint: 'claude', key: claudeKey },
+                { name: '💬 ChatGPT', endpoint: 'chatgpt', key: chatgptKey },
+                { name: '🔍 Perplexity', endpoint: 'perplexity', key: perplexityKey }
+            ];
+
+            let resultsHTML = '';
+            
+            for (const api of apis) {
+                if (api.key) {
+                    try {
+                        const result = await callAPI(api.endpoint, prompt, api.key);
+                        resultsHTML += `
+                            <div class="response">
+                                <h3>${api.name}</h3>
+                                <p>${result.response || result.error}</p>
+                            </div>
+                        `;
+                    } catch (error) {
+                        resultsHTML += `
+                            <div class="response error">
+                                <h3>${api.name} - Erreur</h3>
+                                <p>${error.message}</p>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            document.getElementById('results').innerHTML = resultsHTML;
+        }
+    </script>
+</body>
+</html>
