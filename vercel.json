@@ -1,16 +1,13 @@
+json
 {
   "functions": {
     "api/*.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node@20.x"
     }
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/(.*)",
+      "source": "/",
       "destination": "/index.html"
     }
   ]
