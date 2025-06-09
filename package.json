@@ -1,0 +1,18 @@
+{
+  "name": "parunia-backend",
+  "version": "1.0.0",
+  "description": "Multi-IA comparison tool backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "author": "Parunia",
+  "license": "MIT"
+}
