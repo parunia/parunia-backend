@@ -1,6 +1,5 @@
 javascript
 export default async function handler(req, res) {
-  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -29,10 +28,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'llama-3.1-sonar-small-128k-online',
-        messages: [{
-          role: 'user',
-          content: prompt
-        }],
+        messages: [{ role: 'user', content: prompt }],
         max_tokens: 1000
       })
     });
